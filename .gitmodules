@@ -1,3 +1,6 @@
 [submodule "exodriver"]
 	path = exodriver
 	url = git://github.com/labjack/exodriver.git
+[submodule "libusb"]
+	path = libusb
+	url = git://git.libusb.org/libusb.git
