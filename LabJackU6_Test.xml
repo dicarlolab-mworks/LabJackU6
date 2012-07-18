@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<monkeyml version="1.0">
+    <io_devices tag="IO Devices">
+        <iodevice tag="LabJackU6" priority="" type="LabJackU6" pulse_duration="juiceDur" pulse_on="juice" lever_press="FIO1">
+            
+            <iochannel device="LabJackU6" variable="Var_D_Input0" capability="LabJack_D_Input00" data_type="digital" direction="input" synchrony="hardware_timed_synchronous" range_min="0" range_max="5" resolution="1" update_interval="20ms" data_interval="20ms" tag="D_Input1" TTL_trigger_port="0" pre_trigger_interval="5ms" post_trigger_interval="5ms"/>
+            
+            <iochannel device="LabJackU6" variable="Var_D_Input1" capability="LabJack_D_Input01" data_type="digital" direction="input" synchrony="hardware_timed_synchronous" range_min="0" range_max="5" resolution="1" update_interval="20ms" data_interval="20ms" tag="D_Input2" TTL_trigger_port="0" pre_trigger_interval="5ms" post_trigger_interval="5ms"/>
+            
+            <iochannel device="LabJackU6" variable="Var_D_Output2" capability="LabJack_D_Output02" data_type="digital" direction="output" synchrony="hardware_timed_synchronous" range_min="0" range_max="3.3" resolution="1" update_interval="20ms" data_interval="20ms" tag="D_Output1" TTL_trigger_port="0" pre_trigger_interval="5ms" post_trigger_interval="5ms"/>
+            
+            <iochannel device="LabJackU6" variable="Var_D_Output3" capability="LabJack_D_Output03" data_type="digital" direction="output" synchrony="hardware_timed_synchronous" range_min="0" range_max="3.3" resolution="1" update_interval="20ms" data_interval="20ms" tag="D_Output2" TTL_trigger_port="0" pre_trigger_interval="5ms" post_trigger_interval="5ms"/>
+        </iodevice>
+    </io_devices>
+    
+    <folder tag="Hardware variables">
+            <variable tag="FIO1" full_name="FIO1" default_value="0" scope="GLOBAL" type="INTEGER" editable="never" logging="when_changed"></variable>
+            <variable tag="juice" full_name="juice" scope="GLOBAL" logging="when_changed" default_value="0" type="integer"></variable>
+            <variable tag="juiceDur" full_name="juiceDur" scope="GLOBAL" logging="when_changed" default_value="100" type="integer"></variable>
+    </folder>
+    
+    <variables>
+        <variable tag="Var_D_Input0" full_name="Name_D_Input0" default_value="0" scope="GLOBAL" type="BOOLEAN" editable="never" logging="when_changed"/>
+        <variable tag="Var_D_Input1" full_name="Name_D_Input1" default_value="0" scope="GLOBAL" type="BOOLEAN" editable="never" logging="when_changed"/>
+        <variable tag="Var_D_Output2" full_name="Name_D_Output2" default_value="0" scope="GLOBAL" type="BOOLEAN" editable="always" logging="when_changed"/>
+        <variable tag="Var_D_Output3" full_name="Name_D_Output3" default_value="0" scope="GLOBAL" type="BOOLEAN" editable="always" logging="when_changed"/>
+    </variables>
+    
+    <sounds tag="Sounds">
+		<sound tag="leverPressSound" type="wav_file" path="wavs/shortCorrect.wav"></sound>
+	</sounds>
+    <stimuli>
+        <stimulus tag="blank screen" full_name="bland screen" type="blank_screen" color="1,0,0"/>
+    </stimuli>
+    <experiment tag="theExperiment" full_name="the Experiment">
+        <protocol tag="theProtocol" full_name="the Protocol" interruptable="YES" selection="sequential_ascending" nsamples="1" sampling_method="cycles" description="" interruptible="YES">
+            <block tag="theBlock" full_name="the Block" interruptable="YES" selection="sequential_ascending" nsamples="1" sampling_method="cycles" description="" interruptible="YES">
+                <action tag="Start IO Device" type="start_device_IO" device="LabJackU6"></action>
+                <trial tag="theTrial" full_name="the Trial" description="" interruptible="YES" selection="sequential_ascending" nsamples="1" sampling_method="cycles">
+                    <task_system tag="theTaskSystem">
+                        <task_system_state tag="primeTheTimer" full_name="the State" description="" interruptible="YES">
+                            <action tag="setTimer" full_name="fullname_2" type="start_timer" timer="theTimer" duration="500ms"/>
+                            <!-- 
+                                <action tag="Report_1" full_name="fullname_1" type="report" message="Setting the timer for 2 seconds"/>
+                                <transition tag="goToNextStateWhenTimerExpires" full_name="fullname_3" target="endState" type="timer_expired" timer="theTimer"/>
+                            -->
+                            <action tag="Assignment1" full_name="Assignment1" type="assignment" variable="Var_D_Output2" value="0"/>
+                            <transition type="conditional" tag="If Press" condition="FIO1 == 1" target="endState"></transition>
+                            <transition type="conditional" tag="If Press" condition="Var_D_Input1 == 1" target="endState"></transition>
+                        </task_system_state>
+                        <task_system_state tag="endState" full_name="fullname_4" description="" interruptible="YES">
+                            <action tag="setTimer" full_name="fullname_2" type="start_timer" timer="theTimer" duration="3000ms"/>
+                            <action tag="PlayPressSound" type="play_sound" sound="leverPressSound">
+                            </action>
+                            <action tag="Report_5" full_name="fullname_5" type="report" message="entered endState"/>
+                            <action tag="Assignment2" full_name="Assignment2" type="assignment" variable="Var_D_Output2" value="1"/>
+                            <transition tag="goToNextStateWhenTimerExpires" full_name="fullname_3" target="primeTheTimer" type="timer_expired" timer="theTimer"/>
+                        </task_system_state>
+                    </task_system>
+                </trial>
+            </block>
+        </protocol>
+    </experiment>
+</monkeyml>
