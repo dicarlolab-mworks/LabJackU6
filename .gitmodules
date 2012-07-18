@@ -1,0 +1,3 @@
+[submodule "exodriver"]
+	path = exodriver
+	url = git://github.com/labjack/exodriver.git
